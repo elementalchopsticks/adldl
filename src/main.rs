@@ -30,13 +30,13 @@ fn run(args: &Args) -> Result<()> {
     let query = args.query.join(" ");
     let mut packs = search(&query, args.episode)?;
 
-    if packs.is_empty() {
-        return Err(anyhow!("No results"));
-    }
-
     if args.resolution != 0 {
         let res = format!("{}p", args.resolution);
         packs.retain(|p| p.name.contains(&res));
+    }
+
+    if packs.is_empty() {
+        return Err(anyhow!("No results"));
     }
 
     println!("\x1b[;1mAvailable packs:\x1b[0m");

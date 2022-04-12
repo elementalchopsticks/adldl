@@ -27,7 +27,7 @@ pub struct Pack {
 static PING_RE: SyncLazy<Regex> = SyncLazy::new(|| Regex::new(r#"^(?:\S+ )?PING (\S+)"#).unwrap());
 static MODE_RE: SyncLazy<Regex> = SyncLazy::new(|| Regex::new(r#"^(?:\S+ )?MODE"#).unwrap());
 static DCC_RE: SyncLazy<Regex> = SyncLazy::new(|| {
-    Regex::new(r#"^:(\S+)!.+ PRIVMSG.*(?:DCC|dcc) (?:SEND|send) "?(.*?)"? (\d+) (\d+) (\d+)"#)
+    Regex::new(r#"^(?:\S+ )?PRIVMSG.*(?:DCC|dcc) (?:SEND|send) "?(.*?)"? (\d+) (\d+) (\d+)"#)
         .unwrap()
 });
 
@@ -103,21 +103,18 @@ fn handle_message(
         println!("Waiting for DCC connection...");
     } else if DCC_RE.is_match(message) {
         let caps = DCC_RE.captures(message).unwrap();
-        let botname = &caps[1];
-        let filename = &caps[2];
-        let ip = &caps[3];
-        let port = &caps[4];
-        let size = &caps[5];
+        let filename = &caps[1];
+        let ip = &caps[2];
+        let port = &caps[3];
+        let size = &caps[4];
 
-        if botname == bot {
-            let dcc = Dcc::new(
-                filename.to_owned(),
-                &format!("{}:{}", ip, port),
-                size.parse().unwrap(),
-            )?;
+        let dcc = Dcc::new(
+            filename.to_owned(),
+            &format!("{}:{}", ip, port),
+            size.parse().unwrap(),
+        )?;
 
-            return Ok(Some(dcc));
-        }
+        return Ok(Some(dcc));
     }
 
     Ok(None)
