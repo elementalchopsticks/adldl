@@ -1,0 +1,13 @@
+[package]
+name = "adldl"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+
+[dependencies]
+anyhow = "1.0.56"
+clap = { version = "3.1.8", features = ["derive"] }
+regex = "1.5.5"
+serde = { version = "1.0.136", features = ["derive"] }
+serde_json = "1.0.79"
+ureq = { version = "2.4.0", features = ["json"] }
